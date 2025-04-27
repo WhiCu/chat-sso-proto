@@ -1,4 +1,4 @@
-module github.com/WhiCu/grpc-sso
+module github.com/WhiCu/chat-sso-proto
 
 go 1.23.6
 
