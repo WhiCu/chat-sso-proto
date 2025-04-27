@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package model;
+
+option go_package = "github.com/WhiCu/grpc-sso/gen/go/sso/model;model";
+
+message user {
+    string uuid = 1;
+    string email = 2;
+    optional string username = 3;
+    string password = 4;
+}
+
+message chat {
+    bool is_admin = 1;
+    string uuid = 2;
+}
