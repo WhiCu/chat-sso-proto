@@ -9,6 +9,7 @@ option go_package = "github.com/WhiCu/chat-sso-proto/gen/go/sso/auth;auth";
 service Auth {
     rpc Login(LoginRequest) returns (LoginResponse);
     rpc Register(RegisterRequest) returns (RegisterResponse);
+    rpc AddChat(AddChatRequest) returns (AddChatResponse);
 }
 
 message LoginRequest {
@@ -17,7 +18,8 @@ message LoginRequest {
 
 message LoginResponse {
     string token = 1;
-    repeated model.chat chats = 2;
+    string id = 2;
+    repeated model.chat chats = 3;
 }
 
 message RegisterRequest {
@@ -26,5 +28,13 @@ message RegisterRequest {
 
 message RegisterResponse {
     string token = 1;
+    string id = 2;
+    repeated model.chat chats = 3;
+}
+message AddChatRequest {
+    string id = 1;
+}
+
+message AddChatResponse {
     repeated model.chat chats = 2;
 }

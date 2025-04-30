@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	Auth_Login_FullMethodName    = "/auth.Auth/Login"
 	Auth_Register_FullMethodName = "/auth.Auth/Register"
+	Auth_AddChat_FullMethodName  = "/auth.Auth/AddChat"
 )
 
 // AuthClient is the client API for Auth service.
@@ -29,6 +30,7 @@ const (
 type AuthClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
+	AddChat(ctx context.Context, in *AddChatRequest, opts ...grpc.CallOption) (*AddChatResponse, error)
 }
 
 type authClient struct {
@@ -59,12 +61,23 @@ func (c *authClient) Register(ctx context.Context, in *RegisterRequest, opts ...
 	return out, nil
 }
 
+func (c *authClient) AddChat(ctx context.Context, in *AddChatRequest, opts ...grpc.CallOption) (*AddChatResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddChatResponse)
+	err := c.cc.Invoke(ctx, Auth_AddChat_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServer is the server API for Auth service.
 // All implementations must embed UnimplementedAuthServer
 // for forward compatibility.
 type AuthServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
+	AddChat(context.Context, *AddChatRequest) (*AddChatResponse, error)
 	mustEmbedUnimplementedAuthServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedAuthServer) Login(context.Context, *LoginRequest) (*LoginResp
 }
 func (UnimplementedAuthServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+}
+func (UnimplementedAuthServer) AddChat(context.Context, *AddChatRequest) (*AddChatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddChat not implemented")
 }
 func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
 func (UnimplementedAuthServer) testEmbeddedByValue()              {}
@@ -138,6 +154,24 @@ func _Auth_Register_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Auth_AddChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddChatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).AddChat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Auth_AddChat_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).AddChat(ctx, req.(*AddChatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Auth_ServiceDesc is the grpc.ServiceDesc for Auth service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Register",
 			Handler:    _Auth_Register_Handler,
+		},
+		{
+			MethodName: "AddChat",
+			Handler:    _Auth_AddChat_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
