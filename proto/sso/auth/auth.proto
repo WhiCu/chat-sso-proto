@@ -32,7 +32,8 @@ message RegisterResponse {
     repeated model.chat chats = 3;
 }
 message AddChatRequest {
-    string id = 1;
+    string id_user = 1;
+    string id_chat = 2;
 }
 
 message AddChatResponse {
