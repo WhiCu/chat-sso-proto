@@ -33,9 +33,10 @@ message RegisterResponse {
 }
 message AddChatRequest {
     string user_id = 1;
-    string chat_id = 2;
+    bool is_admin = 2;
+    string chat_id = 3;
 }
 
 message AddChatResponse {
-    repeated model.chat chats = 2;
+    repeated model.chat chats = 1;
 }
